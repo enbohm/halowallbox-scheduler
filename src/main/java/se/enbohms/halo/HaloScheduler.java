@@ -36,7 +36,6 @@ public class HaloScheduler {
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() throws Exception {
     LocalTime now = LocalTime.now();
-    LOG.info(" Api Key " + apiKey);
     if (now.isAfter(LocalTime.of(20, 00)) && now.isBefore(LocalTime.of(23, 00)) && !isLedOn.get()) {
       turnLightOn(getAuthToken());
       isLedOn.set(true);
