@@ -19,13 +19,15 @@ public class HaloScheduler {
 
   private static final Logger LOG = Logger.getLogger(HaloScheduler.class);
 
-  private static final String HALO_SETTING_ENDPOINT =
-      "https://eapi.charge" + ".space/api/v3/chargepoints/2005010779M/settings";
   private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().version(Version.HTTP_2)
       .connectTimeout(Duration.ofSeconds(10)).build();
-  private static final String HALO_AUTH_ENDPOINT = "https://eapi.charge.space/api/v3/auth/login";
+  
   private final AtomicBoolean isLedOn = new AtomicBoolean(false);
 
+  @ConfigProperty(name = "halo.auth.endpoint")
+  String haloAuthEndpoint;
+  @ConfigProperty(name = "halo.settings.endpoint")
+  String haloSettingsEndpoint;
   @ConfigProperty(name = "halo.apikey")
   String apiKey;
   @ConfigProperty(name = "halo.username")
@@ -49,13 +51,12 @@ public class HaloScheduler {
     String jsonAuth = new StringBuilder().append("{").append("\"email\":\"" + userName + "\",")
         .append("\"password\":\"" + pwd + "\"").append("}").toString();
     HttpRequest request = HttpRequest.newBuilder()
-        .POST(HttpRequest.BodyPublishers.ofString(jsonAuth)).uri(URI.create(HALO_AUTH_ENDPOINT))
+        .POST(HttpRequest.BodyPublishers.ofString(jsonAuth)).uri(URI.create(haloAuthEndpoint))
         .setHeader("apiKey", apiKey).header("Content-Type", "application/json").build();
 
     HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
-    return JsonbBuilder.create()
-        .fromJson(response.body(), HaloAuthResponse.class);
+    return JsonbBuilder.create().fromJson(response.body(), HaloAuthResponse.class);
   }
 
   private void turnLightOn(HaloAuthResponse authResponse)
@@ -81,7 +82,7 @@ public class HaloScheduler {
   private void sendPutRequest(HaloAuthResponse authResponse, String jsonPut)
       throws java.io.IOException, InterruptedException {
     HttpRequest putRequest = HttpRequest.newBuilder()
-        .PUT(HttpRequest.BodyPublishers.ofString(jsonPut)).uri(URI.create(HALO_SETTING_ENDPOINT))
+        .PUT(HttpRequest.BodyPublishers.ofString(jsonPut)).uri(URI.create(haloSettingsEndpoint))
         .setHeader("Authorization", "Bearer " + authResponse.getToken())
         .header("Content-Type", "application/json").build();
 
