@@ -55,9 +55,8 @@ public class HaloScheduler {
 
     HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
-    HaloAuthResponse authResponse = JsonbBuilder.create()
+    return JsonbBuilder.create()
         .fromJson(response.body(), HaloAuthResponse.class);
-    return authResponse;
   }
 
   private void turnLightOn(HaloAuthResponse authResponse)
