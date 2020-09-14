@@ -21,7 +21,7 @@ public class HaloScheduler {
 
   private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().version(Version.HTTP_2)
       .connectTimeout(Duration.ofSeconds(10)).build();
-  
+
   private final AtomicBoolean isLedOn = new AtomicBoolean(false);
 
   @ConfigProperty(name = "halo.auth.endpoint")
@@ -62,7 +62,7 @@ public class HaloScheduler {
   private void turnLightOn(HaloAuthResponse authResponse)
       throws java.io.IOException, InterruptedException {
     String jsonEnableLedLight = new StringBuilder().append("{").append("\"id\":\"2005010779M\",")
-        .append("\"dimmer\":\"High\",").append("\"downlight\":\"false\"").
+        .append("\"dimmer\":\"Medium\",").append("\"downlight\":\"false\"").
             append("}").toString();
 
     sendPutRequest(authResponse, jsonEnableLedLight);
