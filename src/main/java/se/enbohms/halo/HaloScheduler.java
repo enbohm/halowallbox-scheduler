@@ -32,6 +32,10 @@ public class HaloScheduler {
   @ConfigProperty(name = "halo.pwd")
   String pwd;
 
+  @Scheduled(cron = "0 15 10 * * ?")
+  void fireAt10AmEveryDay() {
+    System.out.println("****");
+  }
 
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() throws Exception {
