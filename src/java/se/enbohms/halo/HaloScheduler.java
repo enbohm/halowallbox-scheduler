@@ -32,18 +32,15 @@ public class HaloScheduler {
   @ConfigProperty(name = "halo.pwd")
   String pwd;
 
-  @PostConstruct
-  void start() throws IOException, InterruptedException {
-    System.out.println(" Api Key " + apiKey);
-    System.out.println(" Api Key " + pwd);
-    System.out.println(getAuthToken().getToken());
-
+  @Scheduled(cron = "0 15 10 * * ?")
+  void fireAt10AmEveryDay() {
+    System.out.println("****");
   }
 
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() throws Exception {
     LocalTime now = LocalTime.now();
-
+    System.out.println(" Api Key " + apiKey);
     if (now.isAfter(LocalTime.of(20, 00)) && now.isBefore(LocalTime.of(23, 00)) && !isLedOn.get()) {
       turnLightOn(getAuthToken());
       isLedOn.set(true);
