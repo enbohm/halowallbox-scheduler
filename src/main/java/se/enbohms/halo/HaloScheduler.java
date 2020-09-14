@@ -1,7 +1,6 @@
 package se.enbohms.halo;
 
 import io.quarkus.scheduler.Scheduled;
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
@@ -10,13 +9,15 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.bind.JsonbBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class HaloScheduler {
+
+  private static final Logger LOG = Logger.getLogger(HaloScheduler.class);
 
   private static final String HALO_SETTING_ENDPOINT =
       "https://eapi.charge" + ".space/api/v3/chargepoints/2005010779M/settings";
@@ -32,15 +33,10 @@ public class HaloScheduler {
   @ConfigProperty(name = "halo.pwd")
   String pwd;
 
-  @Scheduled(cron = "0 15 10 * * ?")
-  void fireAt10AmEveryDay() {
-    System.out.println("****");
-  }
-
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() throws Exception {
     LocalTime now = LocalTime.now();
-    System.out.println(" Api Key " + apiKey);
+    LOG.info(" Api Key " + apiKey);
     if (now.isAfter(LocalTime.of(20, 00)) && now.isBefore(LocalTime.of(23, 00)) && !isLedOn.get()) {
       turnLightOn(getAuthToken());
       isLedOn.set(true);
@@ -71,7 +67,7 @@ public class HaloScheduler {
             append("}").toString();
 
     sendPutRequest(authResponse, jsonEnableLedLight);
-    System.out.println("TURNING ON LED");
+    LOG.info("TURNING ON LED");
   }
 
   private void turnLightOff(HaloAuthResponse authResponse)
@@ -81,7 +77,7 @@ public class HaloScheduler {
             append("}").toString();
 
     sendPutRequest(authResponse, jsonDisableLedLight);
-    System.out.println("TURNING OFF LED");
+    LOG.info("TURNING OFF LED");
   }
 
   private void sendPutRequest(HaloAuthResponse authResponse, String jsonPut)
@@ -93,8 +89,8 @@ public class HaloScheduler {
 
     HttpResponse<String> putResponse = HTTP_CLIENT
         .send(putRequest, HttpResponse.BodyHandlers.ofString());
-    System.out.println("PUT status code " + putResponse.statusCode());
-    System.out.println("PUT response body " + putResponse.body());
+    LOG.info("PUT status code " + putResponse.statusCode());
+    LOG.info("PUT response body " + putResponse.body());
   }
 }
 
