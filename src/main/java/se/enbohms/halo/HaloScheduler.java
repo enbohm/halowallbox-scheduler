@@ -34,11 +34,16 @@ public class HaloScheduler {
   String userName;
   @ConfigProperty(name = "halo.pwd")
   String pwd;
+  @ConfigProperty(name = "halo.start.hour")
+  int startHour;
+  @ConfigProperty(name = "halo.start.minute")
+  int startMinute;
 
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() throws Exception {
     LocalTime now = LocalTime.now();
-    if (now.isAfter(LocalTime.of(19, 30)) && now.isBefore(LocalTime.of(23, 00)) && !isLedOn.get()) {
+    if (now.isAfter(LocalTime.of(startHour, startMinute)) && now.isBefore(LocalTime.of(23, 00))
+        && !isLedOn.get()) {
       turnLightOn(getAuthToken());
       isLedOn.set(true);
     } else if (now.isAfter(LocalTime.of(23, 00)) && isLedOn.get()) {
