@@ -4,13 +4,18 @@ import io.quarkus.scheduler.Scheduled;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.enterprise.context.ApplicationScoped;
-import javax.json.bind.JsonbBuilder;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
@@ -55,17 +60,19 @@ public class HaloScheduler {
   private HaloAuthResponse getAuthToken() throws java.io.IOException, InterruptedException {
     String jsonAuth = new StringBuilder().append("{").append("\"email\":\"" + userName + "\",")
         .append("\"password\":\"" + pwd + "\"").append("}").toString();
-    HttpRequest request = HttpRequest.newBuilder()
-        .POST(HttpRequest.BodyPublishers.ofString(jsonAuth)).uri(URI.create(haloAuthEndpoint))
-        .setHeader("apiKey", apiKey).header("Content-Type", "application/json").build();
 
-    HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+    Client client = ClientBuilder.newClient();
+    WebTarget target = client.target(URI.create(haloAuthEndpoint));
+    MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
+    headers.add("apiKey", apiKey);
+    headers.add("Content-Type", MediaType.APPLICATION_JSON);
 
-    return JsonbBuilder.create().fromJson(response.body(), HaloAuthResponse.class);
+    Response response = target.request(MediaType.WILDCARD).headers(headers)
+        .post(Entity.json(jsonAuth));
+    return response.readEntity(HaloAuthResponse.class);
   }
 
-  private void turnLightOn(HaloAuthResponse authResponse)
-      throws java.io.IOException, InterruptedException {
+  private void turnLightOn(HaloAuthResponse authResponse) {
     String jsonEnableLedLight = new StringBuilder().append("{").append("\"id\":\"2005010779M\",")
         .append("\"dimmer\":\"Medium\",").append("\"downlight\":\"false\"").
             append("}").toString();
@@ -74,8 +81,7 @@ public class HaloScheduler {
     LOG.info("TURNING ON LED");
   }
 
-  private void turnLightOff(HaloAuthResponse authResponse)
-      throws java.io.IOException, InterruptedException {
+  private void turnLightOff(HaloAuthResponse authResponse) {
     String jsonDisableLedLight = new StringBuilder().append("{").append("\"id\":\"2005010779M\",")
         .append("\"dimmer\":\"OFF\",").append("\"downlight\":\"false\"").
             append("}").toString();
@@ -84,17 +90,18 @@ public class HaloScheduler {
     LOG.info("TURNING OFF LED");
   }
 
-  private void sendPutRequest(HaloAuthResponse authResponse, String jsonPut)
-      throws java.io.IOException, InterruptedException {
-    HttpRequest putRequest = HttpRequest.newBuilder()
-        .PUT(HttpRequest.BodyPublishers.ofString(jsonPut)).uri(URI.create(haloSettingsEndpoint))
-        .setHeader("Authorization", "Bearer " + authResponse.getToken())
-        .header("Content-Type", "application/json").build();
+  private void sendPutRequest(HaloAuthResponse authResponse, String jsonPayload) {
+    Client client = ClientBuilder.newClient();
+    WebTarget target = client.target(URI.create(haloSettingsEndpoint));
+    MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
+    headers.add("Authorization", "Bearer " + authResponse.getToken());
+    headers.add("Content-Type", MediaType.APPLICATION_JSON);
 
-    HttpResponse<String> putResponse = HTTP_CLIENT
-        .send(putRequest, HttpResponse.BodyHandlers.ofString());
-    LOG.info("PUT status code " + putResponse.statusCode());
-    LOG.info("PUT response body " + putResponse.body());
+    Response putResponse = target.request(MediaType.WILDCARD).headers(headers)
+        .put(Entity.json(jsonPayload));
+
+    LOG.info("PUT status code " + putResponse.getStatus());
+    LOG.info("PUT response body " + putResponse.readEntity(String.class));
   }
 }
 

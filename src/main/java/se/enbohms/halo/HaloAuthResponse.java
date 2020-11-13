@@ -1,6 +1,9 @@
 package se.enbohms.halo;
 
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class HaloAuthResponse {
 
   private String token;
