@@ -1,5 +1,6 @@
 .env
 target
+*.jar
 .idea
 *.iml
 *.log

@@ -7,6 +7,7 @@ import java.net.http.HttpClient.Version;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -43,6 +44,11 @@ public class HaloScheduler {
   int startHour;
   @ConfigProperty(name = "halo.start.minute")
   int startMinute;
+
+  @PostConstruct
+  public void init() {
+    LOG.info("Initializing Halo Scheduler using API-key " + apiKey);
+  }
 
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() throws Exception {
