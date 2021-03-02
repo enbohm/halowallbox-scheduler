@@ -103,7 +103,7 @@ public class HaloScheduler {
     headers.add("Authorization", "Bearer " + authResponse.getToken());
     headers.add("Content-Type", MediaType.APPLICATION_JSON);
 
-    Response putResponse = target.request(MediaType.WILDCARD).headers(headers)
+    Response putResponse = target.request(MediaType.APPLICATION_JSON).headers(headers)
         .put(Entity.json(jsonPayload));
 
     LOG.info("PUT status code " + putResponse.getStatus());
