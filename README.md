@@ -14,3 +14,9 @@ You can create a native executable using:
 The produced executable will be a 64 bit Linux executable, so depending on your operating system it may no longer be runnable. If you are running on Linux you can then execute your binary: `./halo-wallbox-scheduler-runner` otherwise you will need to wrap the exucutable in a container. This can be done manually or by executing
 
 ```mvn package -Pnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true```
+
+## Running as a Docker container
+```docker run --env-file=.env enbohm/halo-wallbox-scheduler``` where the .env-file must contain (at least) the entries:
+
+HALO_APIKEY=<your API key>
+HALO_PWD=<your password for the Halo wallbox>
