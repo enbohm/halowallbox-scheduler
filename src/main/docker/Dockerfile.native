@@ -1,6 +1,19 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal
-WORKDIR /work/
-COPY target/*-runner /work/application
-RUN chmod 775 /work
+####
+# This Dockerfile is used in order to build a container that runs the Quarkus application in native
+# (no JVM) mode.
+#
+# Before building the docker image run:
+#
+# mvn package -Pnative -DskipTests -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+#
+# Then run the container using:
+#
+# docker run -i --rm -p 8080:8080 enbohm/halo-wallbox-scheduler
+#
+###
+FROM quay.io/quarkus/quarkus-distroless-image:1.0
+COPY --chown=65532 target/*-runner /application
+
 EXPOSE 8080
+
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
