@@ -1,6 +1,8 @@
 # Charge Amps - Halo Wallbox scheduler
 A project that connects with the Charge Amps Halo Wallbox API. The APIs supports turning on/off lights, add schedules, etc.
 
+API reference at https://eapi.charge.space/swagger/index.html
+
 ## Building and running locally
 ```mvn clean verify``` builds the code and runs tests.
 
