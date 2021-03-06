@@ -21,4 +21,5 @@ The produced executable will be a 64 bit Linux executable, so depending on your 
 ```docker run --env-file=.env enbohm/halo-wallbox-scheduler``` where the .env-file must contain (at least) the entries:
 
 HALO_APIKEY=<your API key>
+  
 HALO_PWD=<your password for the Halo wallbox>
