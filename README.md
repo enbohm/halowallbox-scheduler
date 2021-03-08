@@ -4,7 +4,9 @@ A project that connects with the Charge Amps Halo Wallbox API. The APIs supports
 API reference at https://eapi.charge.space/swagger/index.html
 
 ## Building and running locally
-```mvn clean verify``` builds the code and runs tests.
+```mvn clean verify``` builds the code and runs tests. 
+
+```mvn quarkus:dev``` compiles and starts the app locally. You can also run [HaloMain](src/main/java/se/enbohms/halo/HaloMain.java) from your IDE. 
 
 ## Packaging
 You can create a native executable using: 
