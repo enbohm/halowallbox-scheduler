@@ -62,11 +62,11 @@ public class HaloService {
     headers.add("Authorization", "Bearer " + authResponse.getToken());
     headers.add("Content-Type", MediaType.APPLICATION_JSON);
 
-    Response putResponse = target.request(MediaType.APPLICATION_JSON).headers(headers)
-        .put(Entity.json(jsonPayload));
-
-    LOG.info("PUT status code " + putResponse.getStatus());
-    LOG.info("PUT response body " + putResponse.readEntity(String.class));
+    try (Response putResponse = target.request(MediaType.APPLICATION_JSON).headers(headers)
+        .put(Entity.json(jsonPayload))) {
+      LOG.info("PUT status code " + putResponse.getStatus());
+      LOG.info("PUT response body " + putResponse.readEntity(String.class));
+    }
   }
 
   private HaloAuthResponse getAuthToken() {
@@ -79,8 +79,9 @@ public class HaloService {
     headers.add("apiKey", apiKey);
     headers.add("Content-Type", MediaType.APPLICATION_JSON);
 
-    Response response = target.request(MediaType.WILDCARD).headers(headers)
-        .post(Entity.json(jsonAuth));
-    return response.readEntity(HaloAuthResponse.class);
+    try (Response response = target.request(MediaType.WILDCARD).headers(headers)
+        .post(Entity.json(jsonAuth))) {
+      return response.readEntity(HaloAuthResponse.class);
+    }
   }
 }

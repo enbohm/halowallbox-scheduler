@@ -44,12 +44,12 @@ public class TimeService {
   private LocalTime fetchSunsetTime() {
     Client client = ClientBuilder.newClient();
     WebTarget target = client.target(URI.create(SUNRISE_API_URL));
-    Response response = target.request(MediaType.APPLICATION_JSON).get();
-
-    SunsetSunriseData data = JSONB
-        .fromJson(response.readEntity(String.class).split(":", 2)[1], SunsetSunriseData.class);
-    return ZonedDateTime.parse(data.sunset, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        .withZoneSameInstant(ZoneId.of("Europe/Stockholm")).toLocalTime();
+    try (Response response = target.request(MediaType.APPLICATION_JSON).get()) {
+      SunsetSunriseData data = JSONB
+          .fromJson(response.readEntity(String.class).split(":", 2)[1], SunsetSunriseData.class);
+      return ZonedDateTime.parse(data.sunset, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+          .withZoneSameInstant(ZoneId.of("Europe/Stockholm")).toLocalTime();
+    }
   }
 
   public static class SunsetSunriseData {
