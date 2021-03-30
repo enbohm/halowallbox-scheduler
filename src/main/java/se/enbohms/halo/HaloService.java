@@ -1,34 +1,33 @@
 package se.enbohms.halo;
 
-import java.net.URI;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
+import se.enbohms.halo.restclients.HaloLoginPayload;
+import se.enbohms.halo.restclients.HaloRestClient;
+import se.enbohms.halo.restclients.HaloSettingsPayload;
 
 @ApplicationScoped
 public class HaloService {
 
   private static final Logger LOG = Logger.getLogger(HaloService.class);
 
-  @ConfigProperty(name = "halo.auth.endpoint")
-  String haloAuthEndpoint;
-  @ConfigProperty(name = "halo.settings.endpoint")
-  String haloSettingsEndpoint;
   @ConfigProperty(name = "halo.apikey")
   String apiKey;
   @ConfigProperty(name = "halo.username")
   String userName;
   @ConfigProperty(name = "halo.pwd")
   String pwd;
+  @ConfigProperty(name = "halo.wallbox.id")
+  String wallboxId;
+
+  @Inject
+  @RestClient
+  HaloRestClient haloRestClient;
 
   @PostConstruct
   public void init() {
@@ -37,51 +36,27 @@ public class HaloService {
 
   public void turnLightOn() {
     HaloAuthResponse haloAuthResponse = getAuthToken();
-    String jsonEnableLedLight = new StringBuilder().append("{").append("\"id\":\"2005010779M\",")
-        .append("\"dimmer\":\"Medium\",").append("\"downlight\":\"false\"").
-            append("}").toString();
-
-    sendPutRequest(haloAuthResponse, jsonEnableLedLight);
+    HaloSettingsPayload payload = new HaloSettingsPayload(wallboxId, "Medium", "false");
+    sendPutRequest(haloAuthResponse, payload);
     LOG.info("TURNING ON LED");
   }
 
   public void turnLightOff() {
     HaloAuthResponse haloAuthResponse = getAuthToken();
-    String jsonDisableLedLight = new StringBuilder().append("{").append("\"id\":\"2005010779M\",")
-        .append("\"dimmer\":\"OFF\",").append("\"downlight\":\"false\"").
-            append("}").toString();
-
-    sendPutRequest(haloAuthResponse, jsonDisableLedLight);
+    HaloSettingsPayload payload = new HaloSettingsPayload(wallboxId, "OFF", "false");
+    sendPutRequest(haloAuthResponse, payload);
     LOG.info("TURNING OFF LED");
   }
 
-  private void sendPutRequest(HaloAuthResponse authResponse, String jsonPayload) {
-    Client client = ClientBuilder.newClient();
-    WebTarget target = client.target(URI.create(haloSettingsEndpoint));
-    MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-    headers.add("Authorization", "Bearer " + authResponse.getToken());
-    headers.add("Content-Type", MediaType.APPLICATION_JSON);
-
-    try (Response putResponse = target.request(MediaType.APPLICATION_JSON).headers(headers)
-        .put(Entity.json(jsonPayload))) {
-      LOG.info("PUT status code " + putResponse.getStatus());
-      LOG.info("PUT response body " + putResponse.readEntity(String.class));
-    }
+  private void sendPutRequest(HaloAuthResponse authResponse, HaloSettingsPayload payload) {
+    Response putResponse = haloRestClient
+        .changeSettings("Bearer " + authResponse.getToken(), wallboxId, payload);
+    LOG.info("PUT status code " + putResponse.getStatus());
+    LOG.info("PUT response body " + putResponse.readEntity(String.class));
   }
 
   private HaloAuthResponse getAuthToken() {
-    String jsonAuth = new StringBuilder().append("{").append("\"email\":\"" + userName + "\",")
-        .append("\"password\":\"" + pwd + "\"").append("}").toString();
-
-    Client client = ClientBuilder.newClient();
-    WebTarget target = client.target(URI.create(haloAuthEndpoint));
-    MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-    headers.add("apiKey", apiKey);
-    headers.add("Content-Type", MediaType.APPLICATION_JSON);
-
-    try (Response response = target.request(MediaType.WILDCARD).headers(headers)
-        .post(Entity.json(jsonAuth))) {
-      return response.readEntity(HaloAuthResponse.class);
-    }
+    Response response = haloRestClient.getAuthToken(apiKey, new HaloLoginPayload(userName, pwd));
+    return response.readEntity(HaloAuthResponse.class);
   }
 }
