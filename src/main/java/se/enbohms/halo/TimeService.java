@@ -19,6 +19,8 @@ public class TimeService {
 
   private static final Logger LOG = Logger.getLogger(TimeService.class);
   private static final Jsonb JSONB = JsonbBuilder.create();
+  private static final String LATITUTE = "56.170172";
+  private static final String LONGITUDE = "14.863128";
 
   @Inject
   @RestClient
@@ -41,7 +43,7 @@ public class TimeService {
   }
 
   private LocalTime fetchSunsetTime() {
-    Response response = sunsetTimeClient.fetchSunsetTime("56.170172", "14.863128", 0);
+    Response response = sunsetTimeClient.fetchSunsetTime(LATITUTE, LONGITUDE, 0);
     SunsetSunriseData data = JSONB
         .fromJson(response.readEntity(String.class).split(":", 2)[1], SunsetSunriseData.class);
     return ZonedDateTime.parse(data.sunset, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
@@ -49,6 +51,7 @@ public class TimeService {
   }
 
   public static class SunsetSunriseData {
+
     private String sunset;
     private String sunrise;
 
