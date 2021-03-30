@@ -1,5 +1,8 @@
 package se.enbohms.halo.restclients;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class HaloSettingsPayload {
 
   private String id;

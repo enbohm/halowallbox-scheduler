@@ -20,6 +20,4 @@ public interface HaloRestClient {
   @Path("/chargepoints/{wallboxId}/settings")
   Response changeSettings(@HeaderParam("Authorization") String apiToken,
       @PathParam("wallboxId") String wallboxId, HaloSettingsPayload settingsPayload);
-
-
 }
