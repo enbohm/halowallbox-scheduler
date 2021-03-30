@@ -1,4 +1,4 @@
-package se.enbohms.halo;
+package se.enbohms.halo.restclients;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

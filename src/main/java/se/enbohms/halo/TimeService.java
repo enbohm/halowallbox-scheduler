@@ -12,6 +12,7 @@ import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
+import se.enbohms.halo.restclients.HttpTimeClient;
 
 @ApplicationScoped
 public class TimeService {
@@ -27,7 +28,7 @@ public class TimeService {
   private LocalDate lastUpdated;
 
   public synchronized LocalTime getSunsetTime() {
-    if (needRefetch()) {
+    if (updateCurrentSunsetTime()) {
       this.sunsetTime = fetchSunsetTime();
       this.lastUpdated = LocalDate.now();
       LOG.info("Fetched new sunset time " + sunsetTime);
@@ -35,7 +36,7 @@ public class TimeService {
     return sunsetTime;
   }
 
-  private boolean needRefetch() {
+  private boolean updateCurrentSunsetTime() {
     return this.sunsetTime == null || LocalDate.now().isAfter(lastUpdated);
   }
 
