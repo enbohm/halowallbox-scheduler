@@ -8,7 +8,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/json")
 @RegisterRestClient(configKey = "sunset-api")
-public interface HttpTimeClient {
+public interface SunsetTimeClient {
 
   @GET
   Response fetchSunsetTime(@QueryParam("lat") String lat, @QueryParam("lng") String lgn,

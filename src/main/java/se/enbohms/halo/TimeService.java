@@ -12,7 +12,7 @@ import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
-import se.enbohms.halo.restclients.HttpTimeClient;
+import se.enbohms.halo.restclients.SunsetTimeClient;
 
 @ApplicationScoped
 public class TimeService {
@@ -22,7 +22,7 @@ public class TimeService {
 
   @Inject
   @RestClient
-  HttpTimeClient httpTimeClient;
+  SunsetTimeClient sunsetTimeClient;
 
   private LocalTime sunsetTime;
   private LocalDate lastUpdated;
@@ -41,7 +41,7 @@ public class TimeService {
   }
 
   private LocalTime fetchSunsetTime() {
-    Response response = httpTimeClient.fetchSunsetTime("56.170172", "14.863128", 0);
+    Response response = sunsetTimeClient.fetchSunsetTime("56.170172", "14.863128", 0);
     SunsetSunriseData data = JSONB
         .fromJson(response.readEntity(String.class).split(":", 2)[1], SunsetSunriseData.class);
     return ZonedDateTime.parse(data.sunset, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
