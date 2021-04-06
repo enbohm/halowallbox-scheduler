@@ -5,12 +5,18 @@ import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class HaloScheduler {
 
   private final AtomicBoolean isLedOn = new AtomicBoolean(false);
-  private static final LocalTime END_TIME = LocalTime.of(23, 00);
+
+  @ConfigProperty(name = "halo.end.hour")
+  int endHour;
+
+  @ConfigProperty(name = "halo.end.minute")
+  int endMinute;
 
   @Inject
   HaloService haloService;
@@ -21,10 +27,11 @@ public class HaloScheduler {
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() {
     LocalTime now = LocalTime.now();
-    if (now.isAfter(timeService.getSunsetTime()) && now.isBefore(END_TIME) && !isLedOn.get()) {
+    LocalTime endTime = LocalTime.of(endHour, endMinute);
+    if (now.isAfter(timeService.getSunsetTime()) && now.isBefore(endTime) && !isLedOn.get()) {
       this.haloService.turnLightOn();
       isLedOn.set(true);
-    } else if (now.isAfter(LocalTime.of(23, 00)) && isLedOn.get()) {
+    } else if (now.isAfter(endTime) && isLedOn.get()) {
       this.haloService.turnLightOff();
       isLedOn.set(false);
     }
