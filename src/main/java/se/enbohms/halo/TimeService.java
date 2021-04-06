@@ -1,5 +1,6 @@
 package se.enbohms.halo;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -50,6 +51,7 @@ public class TimeService {
         .withZoneSameInstant(ZoneId.of("Europe/Stockholm")).toLocalTime();
   }
 
+  @RegisterForReflection
   public static class SunsetSunriseData {
 
     private String sunset;
