@@ -39,6 +39,8 @@ jobs:
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2.0.1
     - name: Log coverage percentage
+        with:
+          jacoco-csv-file: target/jacoco-report/jacoco.csv
       run: |
         echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
         echo "branch coverage = ${{ steps.jacoco.outputs.branches }}"
