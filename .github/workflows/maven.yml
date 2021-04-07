@@ -36,10 +36,10 @@ jobs:
       run: mvn -B package -Pnative -Dquarkus.package.uber-jar=false -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true
       #run: mvn clean -B verify --file pom.xml
     - name: Generate JaCoCo Badge
-        id: jacoco
-        uses: cicirello/jacoco-badge-generator@v2.0.1
-        with:
-          generate-branches-badge: true
+      id: jacoco
+      uses: cicirello/jacoco-badge-generator@v2.0.1
+      with:
+        generate-branches-badge: true
     - name: Log coverage percentage
       run: |
         echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
