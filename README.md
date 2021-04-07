@@ -1,4 +1,6 @@
 # Charge Amps - Halo Wallbox scheduler
+https://github.com/enbohm/halowallbox-scheduler/actions/workflows/maven.yml/badge.svg
+
 A project that connects with the Charge Amps Halo Wallbox API. The APIs support turning on/off lights, add schedules, etc. This project turns the LED light on at sunset. The LED light will turn off at the time specified in application.properties.
 
 API reference at https://eapi.charge.space/swagger/index.html
