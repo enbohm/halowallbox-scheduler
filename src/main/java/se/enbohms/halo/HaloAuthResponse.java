@@ -3,23 +3,13 @@ package se.enbohms.halo;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
+import javax.json.bind.annotation.JsonbCreator;
+import javax.json.bind.annotation.JsonbVisibility;
+
 @RegisterForReflection
-public class HaloAuthResponse {
-
-  private String token;
-
-  public HaloAuthResponse() {
-  }
-
-  public HaloAuthResponse(String token) {
-    this.token = token;
-  }
-
-  public String getToken() {
-    return token;
-  }
-
-  public void setToken(String token) {
-    this.token = token;
-  }
+@JsonbVisibility(value = PrivateVisibilityStrategy.class)
+public record HaloAuthResponse(String token) {
+    @JsonbCreator
+    public HaloAuthResponse {
+    }
 }

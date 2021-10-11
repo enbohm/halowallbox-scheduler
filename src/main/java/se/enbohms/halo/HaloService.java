@@ -50,7 +50,7 @@ public class HaloService {
 
   private void sendPutRequest(HaloAuthResponse authResponse, HaloSettingsPayload payload) {
     Response putResponse = haloRestClient
-        .changeSettings("Bearer " + authResponse.getToken(), wallboxId, payload);
+        .changeSettings("Bearer " + authResponse.token(), wallboxId, payload);
     LOG.info("PUT status code " + putResponse.getStatus());
     LOG.info("PUT response body " + putResponse.readEntity(String.class));
   }

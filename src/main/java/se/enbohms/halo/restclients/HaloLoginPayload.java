@@ -1,31 +1,17 @@
 package se.enbohms.halo.restclients;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import se.enbohms.halo.PrivateVisibilityStrategy;
+
+import javax.json.bind.annotation.JsonbCreator;
+import javax.json.bind.annotation.JsonbVisibility;
+
 
 @RegisterForReflection
-public class HaloLoginPayload {
+@JsonbVisibility(value = PrivateVisibilityStrategy.class)
+public record HaloLoginPayload(String email, String password) {
 
-  private String email;
-  private String password;
-
-  public HaloLoginPayload(String email, String password) {
-    this.email = email;
-    this.password = password;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    @JsonbCreator
+    public HaloLoginPayload {
+    }
 }
