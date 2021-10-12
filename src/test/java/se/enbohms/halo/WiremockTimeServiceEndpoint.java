@@ -29,7 +29,7 @@ public class WiremockTimeServiceEndpoint implements QuarkusTestResourceLifecycle
             )));
 
 
-    return Collections.singletonMap("sunset-api/mp-rest/url", wireMockServer.baseUrl());
+    return Map.of("sunset-api/mp-rest/url", wireMockServer.baseUrl());
   }
 
   @Override
