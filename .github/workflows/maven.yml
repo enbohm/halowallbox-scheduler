@@ -30,3 +30,5 @@ jobs:
     - name: Build with Maven
       run: mvn -B package -Pnative -Dquarkus.package.uber-jar=false -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-native-image:21.3-java17
       #run: mvn -B package -Dquarkus.package.uber-jar=false
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
