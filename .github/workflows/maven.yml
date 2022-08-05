@@ -31,4 +31,3 @@ jobs:
         logout: true
     - name: Build with Maven
       run: mvn -B package -Pnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -Dquarkus.container-image.push=${{ github.ref == 'refs/heads/master' }}
-      #run: mvn -B package -Dquarkus.package.uber-jar=false
