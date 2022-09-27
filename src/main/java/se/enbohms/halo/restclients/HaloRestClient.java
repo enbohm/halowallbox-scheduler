@@ -8,7 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("/api/v3")
+@Path("/api/v4")
 @RegisterRestClient(configKey = "halo-api")
 public interface HaloRestClient {
 
