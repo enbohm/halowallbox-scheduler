@@ -35,28 +35,26 @@ public class HaloService {
   }
 
   public void turnLightOn() {
-    HaloAuthResponse haloAuthResponse = getAuthToken();
-    HaloSettingsPayload payload = new HaloSettingsPayload(wallboxId, "Medium", "false");
-    sendPutRequest(haloAuthResponse, payload);
+    var payload = new HaloSettingsPayload(wallboxId, "Medium", "false");
+    sendPutRequest(getAuthToken(), payload);
     LOG.info("TURNING ON LED");
   }
 
   public void turnLightOff() {
-    HaloAuthResponse haloAuthResponse = getAuthToken();
-    HaloSettingsPayload payload = new HaloSettingsPayload(wallboxId, "OFF", "false");
-    sendPutRequest(haloAuthResponse, payload);
+    var payload = new HaloSettingsPayload(wallboxId, "OFF", "false");
+    sendPutRequest(getAuthToken(), payload);
     LOG.info("TURNING OFF LED");
   }
 
   private void sendPutRequest(HaloAuthResponse authResponse, HaloSettingsPayload payload) {
-    Response putResponse = haloRestClient
+    var putResponse = haloRestClient
         .changeSettings("Bearer " + authResponse.token(), wallboxId, payload);
     LOG.info("PUT status code " + putResponse.getStatus());
     LOG.info("PUT response body " + putResponse.readEntity(String.class));
   }
 
   private HaloAuthResponse getAuthToken() {
-    Response response = haloRestClient.getAuthToken(apiKey, new HaloLoginPayload(userName, pwd));
+    var response = haloRestClient.getAuthToken(apiKey, new HaloLoginPayload(userName, pwd));
     return response.readEntity(HaloAuthResponse.class);
   }
 }
