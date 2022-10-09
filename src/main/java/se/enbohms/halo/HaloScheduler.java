@@ -26,8 +26,8 @@ public class HaloScheduler {
 
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() {
-    LocalTime now = LocalTime.now();
-    LocalTime endTime = LocalTime.of(endHour, endMinute);
+    var now = LocalTime.now();
+    var endTime = LocalTime.of(endHour, endMinute);
     if (now.isAfter(timeService.getSunsetTime()) && now.isBefore(endTime) && !isLedOn.get()) {
       this.haloService.turnLightOn();
       isLedOn.set(true);
