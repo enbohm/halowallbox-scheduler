@@ -3,8 +3,8 @@ package se.enbohms.halo;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
-import javax.json.bind.annotation.JsonbCreator;
-import javax.json.bind.annotation.JsonbVisibility;
+import jakarta.json.bind.annotation.JsonbCreator;
+import jakarta.json.bind.annotation.JsonbVisibility;
 
 @RegisterForReflection
 @JsonbVisibility(value = PrivateVisibilityStrategy.class)
