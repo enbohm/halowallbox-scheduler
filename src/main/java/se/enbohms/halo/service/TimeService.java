@@ -1,6 +1,5 @@
-package se.enbohms.halo;
+package se.enbohms.halo.service;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -13,7 +12,7 @@ import jakarta.json.bind.JsonbBuilder;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
-import se.enbohms.halo.restclients.SunsetTimeClient;
+import se.enbohms.halo.restclient.SunsetTimeClient;
 
 @ApplicationScoped
 public class TimeService {
