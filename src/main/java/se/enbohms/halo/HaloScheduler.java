@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import se.enbohms.halo.service.HaloService;
+import se.enbohms.halo.service.TimeService;
 
 @ApplicationScoped
 public class HaloScheduler {

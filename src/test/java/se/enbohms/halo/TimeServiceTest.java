@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
+import se.enbohms.halo.service.TimeService;
 
 @QuarkusTest
 @QuarkusTestResource(WiremockTimeServiceEndpoint.class)

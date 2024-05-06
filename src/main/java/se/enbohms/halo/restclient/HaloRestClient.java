@@ -1,4 +1,4 @@
-package se.enbohms.halo.restclients;
+package se.enbohms.halo.restclient;
 
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;

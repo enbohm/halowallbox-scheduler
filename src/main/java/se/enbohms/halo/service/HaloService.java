@@ -1,15 +1,14 @@
-package se.enbohms.halo;
+package se.enbohms.halo.service;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
-import se.enbohms.halo.restclients.HaloLoginPayload;
-import se.enbohms.halo.restclients.HaloRestClient;
-import se.enbohms.halo.restclients.HaloSettingsPayload;
+import se.enbohms.halo.restclient.HaloLoginPayload;
+import se.enbohms.halo.restclient.HaloRestClient;
+import se.enbohms.halo.restclient.HaloSettingsPayload;
 
 @ApplicationScoped
 public class HaloService {
@@ -36,25 +35,25 @@ public class HaloService {
 
   public void turnLightOn() {
     var payload = new HaloSettingsPayload(wallboxId, "Medium", "false");
-    sendPutRequest(getAuthToken(), payload);
+    sendPutRequest(getToken(), payload);
     LOG.info("TURNING ON LED");
   }
 
   public void turnLightOff() {
     var payload = new HaloSettingsPayload(wallboxId, "OFF", "false");
-    sendPutRequest(getAuthToken(), payload);
+    sendPutRequest(getToken(), payload);
     LOG.info("TURNING OFF LED");
   }
 
-  private void sendPutRequest(HaloAuthResponse authResponse, HaloSettingsPayload payload) {
+  private void sendPutRequest(HaloTokenResponse tokenResponse, HaloSettingsPayload payload) {
     var putResponse = haloRestClient
-        .changeSettings("Bearer " + authResponse.token(), wallboxId, payload);
+        .changeSettings("Bearer " + tokenResponse.token(), wallboxId, payload);
     LOG.info("PUT status code " + putResponse.getStatus());
     LOG.info("PUT response body " + putResponse.readEntity(String.class));
   }
 
-  private HaloAuthResponse getAuthToken() {
+  private HaloTokenResponse getToken() {
     var response = haloRestClient.getAuthToken(apiKey, new HaloLoginPayload(userName, pwd));
-    return response.readEntity(HaloAuthResponse.class);
+    return response.readEntity(HaloTokenResponse.class);
   }
 }
