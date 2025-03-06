@@ -20,6 +20,7 @@
     <surefire-plugin.version>3.5.2</surefire-plugin.version>
     <wiremock.version>3.12.1</wiremock.version>
   </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -31,6 +32,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -44,6 +46,8 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-client</artifactId>
     </dependency>
+
+    <!-- Test dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -60,8 +64,8 @@
       <version>${wiremock.version}</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
+
   <build>
     <finalName>${project.artifactId}</finalName>
     <plugins>
