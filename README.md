@@ -6,7 +6,7 @@ A service that connects with the EV-charger from Charge Amps Halo Wallbox API. T
 API reference at https://eapi.charge.space/swagger/index.html
 
 ## Building and running locally
-You need Java 21 and maven 3.9 (or above) installed on your local machine. 
+You need Java 21 and maven 3.9 (or later) installed on your local machine. 
 
 ```mvn clean verify``` builds the code and runs tests. 
 
