@@ -50,6 +50,13 @@ public class TimeService {
         .withZoneSameInstant(ZoneId.of("Europe/Stockholm")).toLocalTime();
   }
 
+  /**
+   * Returns the current local time in the zone used for sunset calculations.
+   */
+  public LocalTime getCurrentTime() {
+    return ZonedDateTime.now(ZoneId.of("Europe/Stockholm")).toLocalTime();
+  }
+
   public static record SunsetSunriseData(String sunset, String sunrise) {
   }
 }
