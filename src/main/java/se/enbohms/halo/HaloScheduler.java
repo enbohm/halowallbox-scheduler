@@ -44,18 +44,11 @@ public class HaloScheduler {
   }
 
   /**
-   * Returns true if {@code time} is in the interval [start, end) taking midnight crossing into account.
+   * Returns true if {@code time} is in the interval [start, end) (midnight crossing is not into account).
    */
   private static boolean isBetween(LocalTime time, LocalTime start, LocalTime end) {
-    if (start.equals(end)) {
-      return true; // full-day
-    }
-    if (start.isBefore(end)) {
-      return !time.isBefore(start) && time.isBefore(end);
-    } else {
-      // crosses midnight: on if after start OR before end
-      return !time.isBefore(start) || time.isBefore(end);
-    }
+    // Returns true for [start, end) when start < end.
+    return !time.isBefore(start) && time.isBefore(end);
   }
 }
 
