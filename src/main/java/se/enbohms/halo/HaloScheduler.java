@@ -28,15 +28,27 @@ public class HaloScheduler {
 
   @Scheduled(every = "60s")
   void scheduleHaloOnOff() {
-    var now = LocalTime.now();
+    var now = timeService.getCurrentTime();
     var endTime = LocalTime.of(endHour, endMinute);
-    if (now.isAfter(timeService.getSunsetTime()) && now.isBefore(endTime) && !isLedOn.get()) {
+    var sunset = timeService.getSunsetTime();
+
+    boolean shouldBeOn = isBetween(now, sunset, endTime);
+
+    if (shouldBeOn && !isLedOn.get()) {
       this.haloService.turnLightOn();
       isLedOn.set(true);
-    } else if (now.isAfter(endTime) && isLedOn.get()) {
+    } else if (!shouldBeOn && isLedOn.get()) {
       this.haloService.turnLightOff();
       isLedOn.set(false);
     }
+  }
+
+  /**
+   * Returns true if {@code time} is in the interval [start, end) (midnight crossing is not into account).
+   */
+  private static boolean isBetween(LocalTime time, LocalTime start, LocalTime end) {
+    // Returns true for [start, end) when start < end.
+    return !time.isBefore(start) && time.isBefore(end);
   }
 }
 
